@@ -8,7 +8,7 @@
 						 'release-date' => '2009-12-07',
 						 'author' => array('name' => 'Nick Dunn',
 										   'website' => 'http://nick-dunn.co.uk'),
-						'description' => 'Create custom Data Sources that implement output caching'
+						'description' => 'Create custom Data Sources that implement output caching');
 
 		}
 	}
