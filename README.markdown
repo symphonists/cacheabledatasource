@@ -6,6 +6,9 @@ Requirements: Symphony 2.0.6
 
 Explorations from a forum discussion [Datasource Caching](http://symphony-cms.com/discuss/thread/32535/).
 
+## DISCLAIMER
+This shit is relatively untested. Use with caution. If you hit problems, please try and debug and send patches via Github. This will not be released onto the Symphony site as an extension until stability can be verified!
+
 ## Rationale
 
 Some datasources simply execute a lot of database queries, and if you run a busy website then certain DSs may be a performance hit. Presently you have several options:
