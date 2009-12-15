@@ -76,7 +76,7 @@ Class CacheableDatasource extends Datasource {
 	public function grab(&$param_pool=array()) {
 		
 		// Check that this DS has a cache time set
-		if (isset($this->dsParamCACHE) && is_numeric($this->dsParamCACHE) && $this->dsParamCACHE > 0 && is_numeric($this->getSource())) {
+		if (isset($this->dsParamCACHE) && is_numeric($this->dsParamCACHE) && $this->dsParamCACHE > 0) {
 			$filename = null;
 			$file_age = 0;
 			
@@ -144,7 +144,11 @@ Class CacheableDatasource extends Datasource {
 		$result = new XMLElement($this->dsParamROOTELEMENT);
 			
 		try{
-			include(TOOLKIT . '/data-sources/datasource.section.php');
+			if ($this->getSource() == 'navigation') {
+	            include(TOOLKIT . '/data-sources/datasource.navigation.php');
+	        } else {
+	            include(TOOLKIT . '/data-sources/datasource.section.php');
+	        }
 		}
 		catch(Exception $e){
 			$result->appendChild(new XMLElement('error', $e->getMessage()));

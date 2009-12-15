@@ -1,7 +1,7 @@
 # Cacheable Datasource
-Version: 0.1  
+Version: 0.2  
 Author: [Nick Dunn](http://nick-dunn.co.uk)  
-Build Date: 07 December 2009  
+Build Date: 15 December 2009  
 Requirements: Symphony 2.0.6
 
 Explorations from a forum discussion [Datasource Caching](http://symphony-cms.com/discuss/thread/32535/).
@@ -54,3 +54,11 @@ Caches expire when their timeouts are met. You can manually purge the cache by l
 Cache files are never deleted, only overwritten when they have expired. It is normal to have many files generated for each data source since the filename is a hashed signature of all of its configuration properties and filters. This means that if you have pagination enabled, a cache file is generated for each page of results since each page creates a unique combination of filters.
 
 It works this way to allow for very wide, rather than narrow, hierarchies. Say you have a site showcasing bands, 10,000 in total. Your Band page accepts an artist entry ID and filters the Bands section to show that single entry. For this wide sitemap, you would require each instance of the Band Profile datasource to be cached individually. Which it is :-)
+
+## Changelog
+
+* 0.2, 15 December 2009
+	* added support for Navigation DS (thanks [andrrr](http://symphony-cms.com/get-involved/member/andrrr/))
+	
+* 0.1, 07 December 2009
+	* initial release
