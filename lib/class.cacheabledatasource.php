@@ -150,6 +150,11 @@ Class CacheableDatasource extends Datasource {
 	            include(TOOLKIT . '/data-sources/datasource.section.php');
 	        }
 		}
+		catch(FrontendPageNotFoundException $e){
+			// Work around. This ensures the 404 page is displayed and
+			// is not picked up by the default catch() statement below
+			FrontendPageNotFoundExceptionHandler::render($e);
+		}
 		catch(Exception $e){
 			$result->appendChild(new XMLElement('error', $e->getMessage()));
 			return $result;
