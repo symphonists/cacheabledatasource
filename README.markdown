@@ -1,8 +1,8 @@
 # Cacheable Datasource
 
-* Version: 0.3
+* Version: 0.4
 * Author: [Nick Dunn](http://nick-dunn.co.uk)
-* Build Date: 2011-02-05
+* Build Date: 2011-02-18
 * Requirements: Symphony 2.2
 
 Explorations from a forum discussion [Datasource Caching](http://symphony-cms.com/discuss/thread/32535/).
@@ -57,6 +57,10 @@ Cache files are never deleted, only overwritten when they have expired. It is no
 It works this way to allow for very wide, rather than narrow, hierarchies. Say you have a site showcasing bands, 10,000 in total. Your Band page accepts an artist entry ID and filters the Bands section to show that single entry. For this wide sitemap, you would require each instance of the Band Profile datasource to be cached individually. Which it is :-)
 
 ## Changelog
+
+* 0.4, 2011-02-18
+	* added a page under the `System` menu to view the status of all cacheable data sources, and manually purge their cache
+
 
 * 0.3, 2011-02-05
 	* updated DS `grab` function to match that of Symphony 2.2
