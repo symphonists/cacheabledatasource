@@ -11,6 +11,17 @@
 						'description' => 'Create custom Data Sources that implement output caching');
 
 		}
+		
+		public function fetchNavigation(){			
+			return array(
+				array(
+					'location'	=> __('System'),
+					'name'	=> __('Cacheable Data Sources'),
+					'link'	=> '/view/'
+				)
+			);		
+		}
+		
 	}
 
 ?>
