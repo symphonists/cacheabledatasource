@@ -30,17 +30,18 @@ Class CacheableDatasource extends Datasource {
 	
 	private function grabResult(&$param_pool=array()) {
 		
-		libxml_use_internal_errors(true);
-		
 		$result = $this->grab_xml($param_pool);
 		$xml = is_object($result) ? $result->generate(true, 1) : $result;
 		
 		// Parse DS XML to check for errors. If contains malformed XML such as
 		// an unescaped database error, the error is escaped in CDATA
 		$doc = new DOMDocument('1.0', 'utf-8');
+		
+		libxml_use_internal_errors(true);
         $doc->loadXML($xml);            
-        
         $errors = libxml_get_errors();
+		libxml_clear_errors();
+		libxml_use_internal_errors(false);
     
     	// No error, just return the result
         if (empty($errors)) return $result;
