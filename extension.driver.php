@@ -4,8 +4,8 @@
 
 		public function about(){
 			return array('name' => 'Cacheable Datasource',
-						 'version' => '0.5',
-						 'release-date' => '2011-09-01',
+						 'version' => '1.0',
+						 'release-date' => '2011-10-04',
 						 'author' => array('name' => 'Nick Dunn',
 										   'website' => 'http://nick-dunn.co.uk'),
 						'description' => 'Create custom Data Sources that implement output caching');
