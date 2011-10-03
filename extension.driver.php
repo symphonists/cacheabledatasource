@@ -22,16 +22,6 @@
 			);
 		}
 		
-		public function fetchNavigation(){			
-			return array(
-				array(
-					'location'	=> __('System'),
-					'name'	=> __('Cacheable Data Sources'),
-					'link'	=> '/view/'
-				)
-			);		
-		}
-		
 		public function dataSourcePreExecute($context) {
 			$ds = $context['datasource'];
 			$param_pool = $context['param_pool'];
