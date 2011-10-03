@@ -14,7 +14,7 @@
 		
 		public function install() {
 			if(!General::realiseDirectory(CACHE . '/datasources', Symphony::Configuration()->get('write_mode', 'directory'))) {
-				// return false, append alert
+				// TODO: return false, append alert
 			}
 			return TRUE;
 		}
@@ -139,7 +139,7 @@
 			if (!file_exists($filename)) return false;
 
 			$file_age = (int)(floor(time() - filemtime($filename)));
-
+			
 			return ($file_age < ($datasource->dsParamCACHE));
 		}
 
