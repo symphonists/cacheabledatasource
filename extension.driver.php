@@ -30,6 +30,16 @@
 					'delegate'	=> 'DataSourcePreExecute',
 					'callback'	=> 'dataSourcePreExecute'
 				),
+				array(
+					'page'		=> '/blueprints/datasources/',
+					'delegate'	=> 'DatasourcePreCreate',
+					'callback'	=> 'dataSourceSave'
+				),
+				array(
+					'page'		=> '/blueprints/datasources/',
+					'delegate'	=> 'DatasourcePreEdit',
+					'callback'	=> 'dataSourceSave'
+				),
 			);
 		}
 		
@@ -172,7 +182,23 @@
 			$ret->appendChild(new XMLElement('broken-xml', "<![CDATA[" . $xml . "]]>"));
 
 			return $ret;									
-		}		
+		}
+		
+		public function dataSourceSave($context) {
+			
+			$contents = $context['contents'];
+			$cache = $_POST['fields']['cache'];
+			
+			if(!isset($cache)) return;
+			
+			$contents = preg_replace(
+				"/extends Datasource\{\n/",
+				"extends Datasource{\n\n\t\tpublic \$dsParamCACHE = '$cache';",
+				$contents
+			);
+			
+			$context['contents'] = $contents;
+		}
 	}
 
 ?>
