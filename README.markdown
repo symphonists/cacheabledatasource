@@ -1,9 +1,9 @@
 # Cacheable Datasource
 
-* Version: 0.5
+* Version: 1.0
 * Author: [Nick Dunn](http://nick-dunn.co.uk)
 * Build Date: 2011-09-01
-* Requirements: Symphony 2.2
+* Requirements: Symphony 2.3
 
 Explorations from a forum discussion [Datasource Caching](http://symphony-cms.com/discuss/thread/32535/).
 
