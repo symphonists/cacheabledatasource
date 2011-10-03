@@ -12,6 +12,17 @@
 
 		}
 		
+		public function install() {
+			if(!General::realiseDirectory(CACHE . '/datasources', Symphony::Configuration()->get('write_mode', 'directory'))) {
+				// return false, append alert
+			}
+			return TRUE;
+		}
+
+		public function uninstall() {
+			// TODO: delete the cache directory
+		}
+		
 		public function getSubscribedDelegates() {
 			return array(
 				array(
