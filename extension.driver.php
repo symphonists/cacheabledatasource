@@ -3,13 +3,16 @@
 	Class Extension_CacheableDatasource extends Extension {
 
 		public function about(){
-			return array('name' => 'Cacheable Data Source',
-						 'version' => '1.0',
-						 'release-date' => '2011-10-04',
-						 'author' => array('name' => 'Nick Dunn',
-										   'website' => 'http://nick-dunn.co.uk'),
-						'description' => 'Improve performance by caching data source XML.');
-
+			return array(
+				'name' => 'Cacheable Data Source',
+				'version' => '1.1',
+				'release-date' => '2011-10-04',
+				'author' => array(
+					'name' => 'Nick Dunn',
+					'website' => 'http://nick-dunn.co.uk'
+				),
+				'description' => 'Improve performance by caching data source XML.'
+			);
 		}
 		
 		public function install() {
@@ -260,6 +263,9 @@
 			if(!isset($callback) || $callback->driver != 'blueprintsdatasources') return;
 				
 			$cache = 0;
+			
+			// if editing an existing data source, instantiate the DS object
+			// to retrieve the dsParamCACHE property if it exists
 			if($callback->context[0] == 'edit') {
 				$ds = $callback->context[1];
 				$dsm = new DatasourceManager(Symphony::Engine());
