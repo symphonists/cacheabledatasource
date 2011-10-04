@@ -50,9 +50,12 @@
 		
 		/**
 		 * `DatasourcePreCreate` delegate callback function
-		 * Checks whether a data source should be cached or not. 
+		 * Checks whether a data source should be cached or not: builds a filename based on
+		 * the hashed object parameters. If a cache file exists and is not stale, the XML is
+		 * read from the file and returned. If the cache file does not exist, or exists but is
+		 * stale, the data source grab() is executed and the XML cached.
 		 *
-		 * @param string $context
+		 * @param mixed $context
 		 *  Delegate context including the data source object, output XML and param pool array
 		 */
 		public function dataSourcePreExecute($context) {
@@ -127,6 +130,18 @@
 			
 		}
 		
+		/**
+		 * Serialises the data source object properties into a checksum hash to see
+		 * whether the data source is currently cached, and whether it has expired.
+		 * Returns boolean of whether the data source is stale or not.
+		 *
+		 * @param Datasource $datasource
+		 *  The current data source object
+		 * @param string $filename
+		 *  Cache filename, passed by reference
+		 * @param int $file_age
+		 *  Cache file age (in seconds), passed by reference
+		 */
 		private function __buildCacheFilename($datasource, &$filename, &$file_age) {
 			$filename = null;
 
@@ -152,7 +167,16 @@
 			
 			return ($file_age < ($datasource->dsParamCACHE));
 		}
-
+		
+		/**
+		 * Executes a data source. Invalid XML is escaped (CDATA) but still 
+		 * cached. Prevents persistent cached XML from breaking pages.
+		 *
+		 * @param Datasource $datasource
+		 *  The current data source object
+		 * @param int $file_age
+		 *  Cache file age (in seconds), passed by reference
+		 */
 		private function __executeDatasource($datasource, &$param_pool=array()) {
 
 			$result = $datasource->grab($param_pool);
@@ -199,6 +223,13 @@
 			return $ret;									
 		}
 		
+		/**
+		 * `DatasourcePreCreate` and `DatasourcePreEdit` delegates callback function
+		 * Adds the dsParamCACHE property to the data source class file.
+		 *
+		 * @param mixed $context
+		 *  Delegate context including string contents of the data souce PHP file
+		 */
 		public function dataSourceSave($context) {
 			
 			$contents = $context['contents'];
@@ -215,6 +246,13 @@
 			$context['contents'] = $contents;
 		}
 		
+		/**
+		 * `InitaliseAdminPageHead` delegate callback function
+		 * Appends script assets and context to page head
+		 *
+		 * @param mixed $context
+		 *  Delegate context including page object
+		 */
 		public function initaliseAdminPageHead($context) {
 			$callback = (object)$context['parent']->getPageCallback();
 			if(isset($callback) && $callback->driver == 'blueprintsdatasources') {
