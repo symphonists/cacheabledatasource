@@ -56,71 +56,71 @@
 		 *  Delegate context including the data source object, output XML and param pool array
 		 */
 		public function dataSourcePreExecute($context) {
+			
 			$ds = $context['datasource'];
 			$param_pool = $context['param_pool'];
 			
-			// don't cache when the ttl is zero
-			if(isset($ds->dsParamCACHE) && $ds->dsParamCACHE == 0) return;
-			
-			// Check that this DS has a cache time set
-			if (isset($ds->dsParamCACHE) && (int)$ds->dsParamCACHE > 0) {
+			// don't cache if no cache TTL is set at all
+			if(!isset($ds->dsParamCACHE)) return;
+			// don't cache when the TTL is zero
+			if((int)$ds->dsParamCACHE == 0) return;
 				
-				$filename = NULL;
-				$file_age = 0;
+			$filename = NULL;
+			$file_age = 0;
 
-				if ($this->__buildCacheFilename($ds, $filename, $file_age)) {	
+			if ($this->__buildCacheFilename($ds, $filename, $file_age)) {	
 
-					// HACK: peek at the first line of XML to see if it's a serialised array
-					// which contains cached output parameters
+				// HACK: peek at the first line of XML to see if it's a serialised array
+				// which contains cached output parameters
 
-					$xml = file_get_contents($filename);
+				$xml = file_get_contents($filename);
 
-					// split XML into an array of each line
-					$xml_lines = explode("\n",$xml);
+				// split XML into an array of each line
+				$xml_lines = explode("\n",$xml);
 
-					// output params are a serialised array on line 1
-					$output_params = @unserialize(trim($xml_lines[0]));
+				// output params are a serialised array on line 1
+				$output_params = @unserialize(trim($xml_lines[0]));
 
-					// there are cached output parameters
-					if (is_array($output_params)) {
+				// there are cached output parameters
+				if (is_array($output_params)) {
 
-						// remove line 1 and join XML into a string again
-						unset($xml_lines[0]);
-						$xml = join('', $xml_lines);
+					// remove line 1 and join XML into a string again
+					unset($xml_lines[0]);
+					$xml = join('', $xml_lines);
 
-						// add cached output params back into the pool
-						foreach ($output_params as $key => $value) {
-							$param_pool[$key] = $value;
-						}
+					// add cached output params back into the pool
+					foreach ($output_params as $key => $value) {
+						$param_pool[$key] = $value;
 					}
+				}
 
-					// set cache age in the XML result
-					$xml = preg_replace('/cache-age="fresh"/', 'cache-age="'.$file_age.'s"', $xml);
+				// set cache age in the XML result
+				$xml = preg_replace('/cache-age="fresh"/', 'cache-age="'.$file_age.'s"', $xml);
 
-				} else {
-					// Backup the param pool, and see what's been added
-					$tmp = array();
+			} else {
+				
+				// Backup the param pool, and see what's been added
+				$tmp = array();
 
-					// Fetch the contents
-					$xml = $this->__executeDatasource($ds, $tmp);
+				// Fetch the contents
+				$xml = $this->__executeDatasource($ds, $tmp);
 
-					$output_params = null;
+				$output_params = null;
 
-					// Push into the params array
-					foreach ($tmp as $name => $value) {
-						$param_pool[$name] = $value;
-					}
+				// Push into the params array
+				foreach ($tmp as $name => $value) {
+					$param_pool[$name] = $value;
+				}
 
-					if (count($tmp) > 0) $output_params = sprintf("%s\n", serialize($tmp));
+				if (count($tmp) > 0) $output_params = sprintf("%s\n", serialize($tmp));
 
-					// Add an attribute to preg_replace later
-					$xml->setAttribute("cache-age", "fresh");
+				// Add an attribute to preg_replace later
+				$xml->setAttribute("cache-age", "fresh");
 
-					// Write the cached XML to disk
-					file_put_contents($filename, $output_params . $xml->generate(true, 1));
+				// Write the cached XML to disk
+				file_put_contents($filename, $output_params . $xml->generate(true, 1));
 
-				}																														
-			}
+			}																														
 
 			$context['xml'] = $xml;
 			$context['param_pool'] = $param_pool;
