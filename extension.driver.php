@@ -3,12 +3,12 @@
 	Class Extension_CacheableDatasource extends Extension {
 
 		public function about(){
-			return array('name' => 'Cacheable Datasource',
+			return array('name' => 'Cacheable Data Source',
 						 'version' => '1.0',
 						 'release-date' => '2011-10-04',
 						 'author' => array('name' => 'Nick Dunn',
 										   'website' => 'http://nick-dunn.co.uk'),
-						'description' => 'Create custom Data Sources that implement output caching');
+						'description' => 'Improve performance by caching data source XML.');
 
 		}
 		
