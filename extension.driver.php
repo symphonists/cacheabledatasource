@@ -20,7 +20,7 @@
 		}
 
 		public function uninstall() {
-			// TODO: delete the cache directory
+			if (is_dir(CACHE . '/datasources')) rmdir(CACHE . '/datasources');
 		}
 		
 		public function getSubscribedDelegates() {
