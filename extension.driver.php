@@ -255,33 +255,34 @@
 		 */
 		public function initaliseAdminPageHead($context) {
 			$callback = (object)$context['parent']->getPageCallback();
-			if(isset($callback) && $callback->driver == 'blueprintsdatasources') {
+			
+			// only apply assets to Blueprints > Data Sources page
+			if(!isset($callback) || $callback->driver != 'blueprintsdatasources') return;
 				
-				$cache = 0;
-				if($callback->context[0] == 'edit') {
-					$ds = $callback->context[1];
-					$dsm = new DatasourceManager(Symphony::Engine());
-					$datasource = $dsm->create($ds, NULL, false);
-					$cache = $datasource->dsParamCACHE;
-				}
-				if(is_null($cache)) $cache = 0;
-				
-				Administration::instance()->Page->addElementToHead(
-					new XMLElement(
-						'script',
-						"Symphony.Context.add('cacheabledatasource', " . json_encode(array(
-							'cache' => (isset($_POST['fields']['cache']) ? $_POST['fields']['cache'] : $cache)
-						)) . ");",
-						array('type' => 'text/javascript')
-					), time()
-				);
-				
-				Administration::instance()->Page->addScriptToHead(
-					URL . '/extensions/cacheabledatasource/assets/cacheabledatasource.blueprintsdatasources.js',
-					time()
-				);
-				
+			$cache = 0;
+			if($callback->context[0] == 'edit') {
+				$ds = $callback->context[1];
+				$dsm = new DatasourceManager(Symphony::Engine());
+				$datasource = $dsm->create($ds, NULL, false);
+				$cache = $datasource->dsParamCACHE;
 			}
+			if(is_null($cache)) $cache = 0;
+			
+			Administration::instance()->Page->addElementToHead(
+				new XMLElement(
+					'script',
+					"Symphony.Context.add('cacheabledatasource', " . json_encode(array(
+						'cache' => (isset($_POST['fields']['cache']) ? $_POST['fields']['cache'] : $cache)
+					)) . ");",
+					array('type' => 'text/javascript')
+				), time()
+			);
+			
+			Administration::instance()->Page->addScriptToHead(
+				URL . '/extensions/cacheabledatasource/assets/cacheabledatasource.blueprintsdatasources.js',
+				time()
+			);
+				
 			
 		}
 		
