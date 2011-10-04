@@ -48,12 +48,22 @@
 			);
 		}
 		
+		/**
+		 * `DatasourcePreCreate` delegate callback function
+		 * Checks whether a data source should be cached or not. 
+		 *
+		 * @param string $context
+		 *  Delegate context including the data source object, output XML and param pool array
+		 */
 		public function dataSourcePreExecute($context) {
 			$ds = $context['datasource'];
 			$param_pool = $context['param_pool'];
 			
+			// don't cache when the ttl is zero
+			if(isset($ds->dsParamCACHE) && $ds->dsParamCACHE == 0) return;
+			
 			// Check that this DS has a cache time set
-			if (isset($ds->dsParamCACHE) && is_numeric($ds->dsParamCACHE) && $ds->dsParamCACHE > 0) {
+			if (isset($ds->dsParamCACHE) && (int)$ds->dsParamCACHE > 0) {
 				
 				$filename = NULL;
 				$file_age = 0;
@@ -216,6 +226,7 @@
 					$datasource = $dsm->create($ds, NULL, false);
 					$cache = $datasource->dsParamCACHE;
 				}
+				if(is_null($cache)) $cache = 0;
 				
 				Administration::instance()->Page->addElementToHead(
 					new XMLElement(
