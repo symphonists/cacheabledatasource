@@ -14,7 +14,7 @@
 		
 		public function install() {
 			if(!General::realiseDirectory(CACHE . '/datasources', Symphony::Configuration()->get('write_mode', 'directory'))) {
-				// TODO: return false, append alert
+				throw new Exception(__('Cacheable Data Source was not installed: cache directory could not be created at %s.', array('<code>/manifest/cache/datasources</code>')));
 			}
 			return TRUE;
 		}
