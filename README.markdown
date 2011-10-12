@@ -42,26 +42,3 @@ Caches expire when their timeouts are met. You can manually purge the cache by l
 
 ## Why are so many cache files created?
 Cache files are never deleted, only overwritten when they have expired. It is normal to have many files generated for each data source since the filename is a hashed signature of all of its configuration properties and filters. This means that if you have pagination enabled on your data source, a new cache file is generated for each page of results, since each page creates a unique combination of filters (and therefore unique XML).
-
-## Changelog
-
-* 1.0, 2011-10-03
-	* major milestone release
-	* removed unnecessary bloat of the Cache Viewer page
-	* cache files are now stored in a folder within the cache directory for easier bulk purging
-	* no more editing of data sources! Caching is applied unobtrusively with delegates and JavaScript (Symphony 2.3+) meaning you don't need to touch PHP and customise your data source files
-
-* 0.6, 2011-09-01
-	* fixed a major bug whereby the extension would not escape invalid XML properly
-
-* 0.4, 2011-02-18
-	* added a page under the `System` menu to view the status of all cacheable data sources, and manually purge their cache
-
-* 0.3, 2011-02-05
-	* updated DS `grab` function to match that of Symphony 2.2
-
-* 0.2, 15 December 2009
-	* added support for Navigation DS (thanks [andrrr](http://symphony-cms.com/get-involved/member/andrrr/))
-	
-* 0.1, 07 December 2009
-	* initial release
