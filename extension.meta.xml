@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
-<extension id="cacheabledatasource">
+<extension id="cacheabledatasource" status="released" xmlns="http://symphony-cms.com/schemas/extension/1.0">
 	
 	<name>Cacheable Datasource</name>
 
