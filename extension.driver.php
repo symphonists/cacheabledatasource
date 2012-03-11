@@ -1,19 +1,6 @@
 <?php
 
 	Class Extension_CacheableDatasource extends Extension {
-
-		public function about(){
-			return array(
-				'name' => 'Cacheable Data Source',
-				'version' => '1.1',
-				'release-date' => '2011-10-04',
-				'author' => array(
-					'name' => 'Nick Dunn',
-					'website' => 'http://nick-dunn.co.uk'
-				),
-				'description' => 'Improve performance by caching data source XML.'
-			);
-		}
 		
 		public function install() {
 			if(!General::realiseDirectory(CACHE . '/datasources', Symphony::Configuration()->get('write_mode', 'directory'))) {
@@ -241,8 +228,8 @@
 			if(!isset($cache)) return;
 			
 			$contents = preg_replace(
-				"/extends Datasource\{\n/",
-				"extends Datasource{\n\n\t\tpublic \$dsParamCACHE = '$cache';",
+				"/<!-- VAR LIST -->/",
+				"public \$dsParamCACHE = '$cache';\n\t\t<!-- VAR LIST -->",
 				$contents
 			);
 			
@@ -257,17 +244,19 @@
 		 *  Delegate context including page object
 		 */
 		public function initaliseAdminPageHead($context) {
-			$callback = (object)$context['parent']->getPageCallback();
 			
-			// only apply assets to Blueprints > Data Sources page
-			if(!isset($callback) || $callback->driver != 'blueprintsdatasources') return;
-				
+			$page = Administration::instance()->Page;
+			if(!$page instanceOf contentBlueprintsDatasources) return;
+			
+			$url_context = $page->getContext();
+			if(!in_array($url_context[0], array('new', 'edit'))) return;
+			
 			$cache = 0;
 			
 			// if editing an existing data source, instantiate the DS object
 			// to retrieve the dsParamCACHE property if it exists
-			if($callback->context[0] == 'edit') {
-				$ds = $callback->context[1];
+			if($url_context[0] == 'edit') {
+				$ds = $url_context[1];
 				$dsm = new DatasourceManager(Symphony::Engine());
 				$datasource = $dsm->create($ds, NULL, false);
 				$cache = $datasource->dsParamCACHE;
