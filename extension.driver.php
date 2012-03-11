@@ -3,14 +3,14 @@
 	Class Extension_CacheableDatasource extends Extension {
 		
 		public function install() {
-			if(!General::realiseDirectory(CACHE . '/datasources', Symphony::Configuration()->get('write_mode', 'directory'))) {
-				throw new Exception(__('Cacheable Data Source was not installed: cache directory could not be created at %s.', array('<code>/manifest/cache/datasources</code>')));
+			if(!General::realiseDirectory(CACHE . '/cacheabledatasource', Symphony::Configuration()->get('write_mode', 'directory'))) {
+				throw new Exception(__('Cacheable Datasource was not installed: cache directory could not be created at %s.', array('<code>/manifest/cache/cacheabledatasource</code>')));
 			}
 			return TRUE;
 		}
 
 		public function uninstall() {
-			if (is_dir(CACHE . '/datasources')) rmdir(CACHE . '/datasources');
+			if (is_dir(CACHE . '/cacheabledatasource')) rmdir(CACHE . '/cacheabledatasource');
 		}
 		
 		public function getSubscribedDelegates() {
@@ -145,7 +145,7 @@
 			}
 
 			$filename = sprintf(
-				"%s/cache/datasources/%s_%s.xml",
+				"%s/cache/cacheabledatasource/%s_%s.xml",
 				MANIFEST,
 				preg_replace("/^datasource/", '', get_class($datasource)),
 				md5($filename)
