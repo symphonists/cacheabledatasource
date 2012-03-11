@@ -21,8 +21,9 @@
 	</authors>
 	
 	<releases>
-		<release version="1.1" date="2011-10-04" min="2.3" />
-		<release version="1.0" date="2011-10-03" min="2.2">
+		<release version="1.1.1" date="2012-03-11" min="2.3" />
+		<release version="1.1.0" date="2011-10-04" min="2.3" />
+		<release version="1.0.0" date="2011-10-03" min="2.2" max="2.2.5">
 			* major milestone release
 			* removed unnecessary bloat of the Cache Viewer page
 			* cache files are now stored in a folder within the cache directory for easier bulk purging
