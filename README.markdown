@@ -3,7 +3,7 @@
 * Version: 1.1
 * Author: [Nick Dunn](http://nick-dunn.co.uk)
 * Build Date: 2011-10-04
-* Requirements: Symphony 2.3 (if using less than Symphony 2.3 please use v0.6 of this extension)
+* Requirements: Symphony 2.3 (if using less than Symphony 2.3 please use v0.5 of this extension)
 
 ## Description
 

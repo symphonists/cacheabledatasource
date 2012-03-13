@@ -29,7 +29,7 @@
 			* cache files are now stored in a folder within the cache directory for easier bulk purging
 			* no more editing of data sources! Caching is applied unobtrusively with delegates and JavaScript (Symphony 2.3+) meaning you don't need to touch PHP and customise your data source files
 		</release>
-		<release version="0.6" date="2011-09-01">
+		<release version="0.5" date="2011-09-01">
 			* fixed a major bug whereby the extension would not escape invalid XML properly
 		</release>
 	</releases>	
