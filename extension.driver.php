@@ -34,9 +34,60 @@
 					'page' => '/backend/',
 					'delegate' => 'InitaliseAdminPageHead',
 					'callback' => 'initaliseAdminPageHead'
-				)
+				),
+				
+				array(
+		            'page'      => '/publish/new/',
+		            'delegate'  => 'EntryPostCreate',
+		            'callback'  => 'flushCache'
+		        ),              
+		        array(
+		            'page'      => '/publish/edit/',
+		            'delegate'  => 'EntryPostEdit',
+		            'callback'  => 'flushCache'
+		        ),
+		        array(
+		            'page'      => '/publish/',
+		            'delegate'  => 'EntryPreDelete',
+		            'callback'  => 'flushCache'
+		        ),
+		        array(
+		            'page'      => '/publish/',
+		            'delegate'  => 'EntriesPostOrder',
+		            'callback'  => 'flushCache'
+		        )
 			);
 		}
+		
+		public function flushCache($context) {
+
+ 			if($context['delegate'] == 'EntryPreDelete' || $context['delegate'] == 'EntriesPostOrder') {
+				$sectionId = EntryManager::fetchEntrySectionID($context['entry_id'][0]);
+			} else {
+				$sectionId = $context['section']->get('id');
+			}
+
+			$cacheDir = CACHE . '/cacheabledatasource/';
+			$cache = General::listStructure($cacheDir, '@.xml$@');
+
+			if(empty($cache['filelist']) || !is_array($cache['filelist'])) 
+				return false;
+
+			require(TOOLKIT . '/class.datasourcemanager.php');
+			$dsm = new DatasourceManager(Symphony::Engine());
+
+			try {
+				foreach($dsm->listAll() as $ds) {
+					if($ds['source'] != $sectionId) continue;
+
+					foreach($cache['filelist'] as $file) {
+						if(preg_match('@^' . $ds['handle'] . '_@', basename($file))) 
+							unlink($file);
+					}
+				}
+			} catch(Exception $e){}
+			
+		}		
 		
 		/**
 		 * `DatasourcePreCreate` delegate callback function
