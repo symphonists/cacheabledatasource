@@ -68,10 +68,6 @@
 			}
 
 			$cacheDir = CACHE . '/cacheabledatasource/';
-			$cache = General::listStructure($cacheDir, '@.xml$@');
-
-			if(empty($cache['filelist']) || !is_array($cache['filelist'])) 
-				return false;
 
 			require(TOOLKIT . '/class.datasourcemanager.php');
 			$dsm = new DatasourceManager(Symphony::Engine());
@@ -79,8 +75,11 @@
 			try {
 				foreach($dsm->listAll() as $ds) {
 					if($ds['source'] != $sectionId) continue;
+					
+					$cache = glob($cacheDir.$ds['handle'].'_*.xml');
+					if(empty($cache)) continue;
 
-					foreach(glob($cacheDir.$ds['handle'].'_*.xml') as $file) {
+					foreach($cache as $file) {
 						unlink($file);
 					}
 				}
