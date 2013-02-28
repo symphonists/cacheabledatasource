@@ -80,9 +80,8 @@
 				foreach($dsm->listAll() as $ds) {
 					if($ds['source'] != $sectionId) continue;
 
-					foreach($cache['filelist'] as $file) {
-						if(preg_match('@^' . $ds['handle'] . '_@', basename($file))) 
-							unlink($file);
+					foreach(glob($cacheDir.$ds['handle'].'_*.xml') as $file) {
+						unlink($file);
 					}
 				}
 			} catch(Exception $e){}
