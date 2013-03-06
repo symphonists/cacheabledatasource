@@ -69,7 +69,7 @@
 
 			$cacheDir = CACHE . '/cacheabledatasource/';
 
-			require(TOOLKIT . '/class.datasourcemanager.php');
+			require_once(TOOLKIT . '/class.datasourcemanager.php');
 			$dsm = new DatasourceManager(Symphony::Engine());
 
 			try {
