@@ -61,11 +61,28 @@
 		
 		public function flushCache($context) {
 
+
+			$sectionsToFlush = array();
+
  			if($context['delegate'] == 'EntryPreDelete' || $context['delegate'] == 'EntriesPostOrder') {
-				$sectionId = EntryManager::fetchEntrySectionID($context['entry_id'][0]);
+				require_once(TOOLKIT . '/class.entrymanager.php');
+				$sectionsToFlush[0] = EntryManager::fetchEntrySectionID($context['entry_id'][0]);
 			} else {
-				$sectionId = $context['section']->get('id');
+				$sectionsToFlush[0] = $context['section']->get('id');
 			}
+
+			$associatedSections = Symphony::Database()->fetch( 
+				sprintf('SELECT DISTINCT `child_section_id` value, `parent_section_id` value FROM `tbl_sections_association` 
+					WHERE `parent_section_id` = %d OR `child_section_id` = %d',
+					$sectionsToFlush[0],
+					$sectionsToFlush[0]
+				)
+			);
+
+			General::flattenArray($associatedSections);
+			$associatedSections = array_unique(array_values($associatedSections));
+			
+			if(is_array($associatedSections) && !empty($associatedSections)) $sectionsToFlush = array_merge($sectionsToFlush, $associatedSections);
 
 			$cacheDir = CACHE . '/cacheabledatasource/';
 
@@ -74,7 +91,7 @@
 
 			try {
 				foreach($dsm->listAll() as $ds) {
-					if($ds['source'] != $sectionId) continue;
+					if(!in_array($ds['source'], $sectionsToFlush)) continue;
 					
 					$cache = glob($cacheDir.$ds['handle'].'_*.xml');
 					if(empty($cache)) continue;
@@ -83,7 +100,9 @@
 						unlink($file);
 					}
 				}
-			} catch(Exception $e){}
+			} catch(Exception $e){
+				Symphony::Log()->writeToLog(date('d.m.y H:i:s') . ' > CacheableDatasource: '. $e->getMessage(), true);
+			}
 			
 		}		
 		
