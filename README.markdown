@@ -1,12 +1,5 @@
 # Cacheable Datasource
 
-* Version: 1.1
-* Author: [Nick Dunn](http://nick-dunn.co.uk)
-* Build Date: 2011-10-04
-* Requirements: Symphony 2.3 (if using less than Symphony 2.3 please use v0.5 of this extension)
-
-## Description
-
 Some datasources simply execute a lot of database queries. It's a fact of life, so instead of complaining, learn to deal with it ;-) You can:
 
 * reduce the number of fields and entries that the datasource is fetching

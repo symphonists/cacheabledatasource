@@ -41,7 +41,7 @@
 					'page'      => '/publish/new/',
 					'delegate'  => 'EntryPostCreate',
 					'callback'  => 'flushCache'
-				),              
+				),
 				array(
 					'page'      => '/publish/edit/',
 					'delegate'  => 'EntryPostEdit',
@@ -71,7 +71,7 @@
 					'page' => '/blueprints/events/edit/',
 					'delegate' => 'AppendEventFilter',
 					'callback' => 'appendEventFilter'
-				),				
+				),
 			);
 		}
 	
@@ -99,7 +99,7 @@
 				Symphony::Log()->writeToLog(date('d.m.y H:i:s') . ' > CacheableDatasource: '. $e->getMessage(), true);
 			}
 		
-		}		
+		}
 
 		private function __fetchSectionsFromContext($context) {
 
@@ -117,8 +117,8 @@
 				$this->_sectionsToFlush[0] = $context['section']->get('id');
 			}
 
-			$associatedSections = Symphony::Database()->fetch( 
-				sprintf('SELECT DISTINCT `child_section_id` value, `parent_section_id` value FROM `tbl_sections_association` 
+			$associatedSections = Symphony::Database()->fetch(
+				sprintf('SELECT DISTINCT `child_section_id` value, `parent_section_id` value FROM `tbl_sections_association`
 					WHERE `parent_section_id` = %d OR `child_section_id` = %d',
 					$this->_sectionsToFlush[0],
 					$this->_sectionsToFlush[0]
@@ -169,7 +169,7 @@
 			$filename = NULL;
 			$file_age = 0;
 
-			if ($this->__buildCacheFilename($ds, $filename, $file_age)) {	
+			if ($this->__buildCacheFilename($ds, $filename, $file_age)) {
 
 				// HACK: peek at the first line of XML to see if it's a serialised array
 				// which contains cached output parameters
@@ -221,7 +221,7 @@
 				// Write the cached XML to disk
 				file_put_contents($filename, $output_params . $xml->generate(true, 1));
 
-			}																														
+			}
 
 			$context['xml'] = $xml;
 			$context['param_pool'] = $param_pool;
@@ -267,7 +267,7 @@
 		}
 	
 		/**
-		 * Executes a data source. Invalid XML is escaped (CDATA) but still 
+		 * Executes a data source. Invalid XML is escaped (CDATA) but still
 		 * cached. Prevents persistent cached XML from breaking pages.
 		 *
 		 * @param Datasource $datasource
@@ -285,7 +285,7 @@
 			$doc = new DOMDocument('1.0', 'utf-8');
 
 			libxml_use_internal_errors(true);
-	        $doc->loadXML($xml);            
+	        $doc->loadXML($xml);
 	        $errors = libxml_get_errors();
 			libxml_clear_errors();
 			libxml_use_internal_errors(false);
@@ -294,8 +294,8 @@
 	        if (empty($errors)) return $result;
 
 			// There's an error, so $doc will be empty
-			// Use regex to get the root node			
-			// If something's wrong, just push back the broken XML			
+			// Use regex to get the root node
+			// If something's wrong, just push back the broken XML
 			if (!preg_match('/<([^ \/>]+)/', $xml, $matches)) return $result;
 
 			$ret = new XMLElement($matches[1]);
@@ -318,7 +318,7 @@
 			// Return the XML
 			$ret->appendChild(new XMLElement('broken-xml', "<![CDATA[" . $xml . "]]>"));
 
-			return $ret;									
+			return $ret;
 		}
 	
 		/**

@@ -1,26 +1,47 @@
-jQuery(document).ready(function() {
-	
-	// get the cacheabledatasource context from the DOM
-	var datasource = Symphony.Context.get('cacheabledatasource');
-	
-	// build HTML label
-	var label = '<label>';
-	label += 'Update cached result every ';
-	label += '<input name="fields[cache]" type="text" value="' + datasource.cache + '" size="6" />';
-	label += ' seconds';
-	label += '</label>';
-	
-	// append label to a new fieldset
-	var fieldset = '<fieldset class="settings cacheabledatasource"><legend>Caching</legend>'+label+'</fieldset>';
-	
-	jQuery('select[name="fields[source]"]').on('change', function() {
-		// remove the cache fieldset
-		jQuery('fieldset.cacheabledatasource').remove();
-		// if the source is a number (a Section), append cache fieldset
-		if(!isNaN(jQuery(this).val())) {
-			jQuery('div.actions').before(fieldset);
-		}
-	})
-	.change();
-	
-});
+(function($, Symphony) {
+	'use strict';
+
+	Symphony.Language.add({
+		'Caching': false,
+		'The cache will automatically be purged when updating entries in the backend.': false,
+		'Cache expiration ': false,
+		'in minutes': false
+	});
+
+	$(document).on('ready.cacheabledatasource', function() {
+		var datasource = Symphony.Context.get('cacheabledatasource'),
+			fieldset, legend, help, label, input;
+
+		// Create fieldset
+		fieldset = $('<fieldset />', {
+			class: 'settings contextual'
+		}).attr('data-context', 'sections');
+
+		// Create legend
+		legend = $('<legend />', {
+			text: Symphony.Language.get('Caching')
+		}).appendTo(fieldset);
+
+		// Create help
+		help = $('<p />', {
+			class: 'help',
+			text: Symphony.Language.get('The cache will automatically be purged when updating entries in the backend.')
+		}).appendTo(fieldset);
+
+		// Create label
+		label = $('<label />', {
+			html: Symphony.Language.get('Cache expiration') + '<i>' + Symphony.Language.get('in minutes') + '</i>'
+		}).appendTo(fieldset);
+
+		// Crate input
+		input = $('<input />', {
+			name: 'fields[cache]',
+			type: 'text',
+			value: datasource.cache
+		}).appendTo(label);
+		
+		// Append fieldset
+		Symphony.Elements.contents.find('div.actions').before(fieldset);
+	});
+
+})(window.jQuery, window.Symphony);

@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-
 <extension id="cacheabledatasource" status="released" xmlns="http://symphony-cms.com/schemas/extension/1.0">
 	<name>Cacheable Datasource</name>
 	<description lang="en">Improve page performance by caching data source output XML.</description>
@@ -17,6 +16,9 @@
 		</author>
 	</authors>
 	<releases>
+		<release version="2.0" date="2014-04-16" min="2.4">
+			- Symphony 2.4 compatibility
+		</release>
 		<release version="1.1.1" date="2012-03-11" min="2.3" />
 		<release version="1.1.0" date="2011-10-04" min="2.3" />
 		<release version="1.0.0" date="2011-10-03" min="2.2" max="2.2.5">
@@ -28,5 +30,5 @@
 		<release version="0.5" date="2011-09-01">
 			- fixed a major bug whereby the extension would not escape invalid XML properly
 		</release>
-	</releases>	
+	</releases>
 </extension>
