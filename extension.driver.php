@@ -1,9 +1,9 @@
 <?php
 
 	Class Extension_CacheableDatasource extends Extension {
-		
+
 		private $_sectionsToFlush = null;
-		
+
 		public function install() {
 			if(!General::realiseDirectory(CACHE . '/cacheabledatasource', Symphony::Configuration()->get('write_mode', 'directory'))) {
 				throw new Exception(__('Cacheable Datasource was not installed: cache directory could not be created at %s.', array('<code>/manifest/cache/cacheabledatasource</code>')));
@@ -14,7 +14,7 @@
 		public function uninstall() {
 			if (is_dir(CACHE . '/cacheabledatasource')) rmdir(CACHE . '/cacheabledatasource');
 		}
-	
+
 		public function getSubscribedDelegates() {
 			return array(
 				array(
@@ -74,7 +74,7 @@
 				),
 			);
 		}
-	
+
 		public function flushCache($context) {
 
 			$this->__fetchSectionsFromContext($context);
@@ -87,7 +87,7 @@
 			try {
 				foreach($dsm->listAll() as $ds) {
 					if(!in_array($ds['source'], $this->_sectionsToFlush)) continue;
-				
+
 					$cache = glob($cacheDir.$ds['handle'].'_*.xml');
 					if(empty($cache)) continue;
 
@@ -98,7 +98,7 @@
 			} catch(Exception $e){
 				Symphony::Log()->writeToLog(date('d.m.y H:i:s') . ' > CacheableDatasource: '. $e->getMessage(), true);
 			}
-		
+
 		}
 
 		private function __fetchSectionsFromContext($context) {
@@ -127,14 +127,14 @@
 
 			General::flattenArray($associatedSections);
 			$associatedSections = array_unique(array_values($associatedSections));
-		
+
 			if(is_array($associatedSections) && !empty($associatedSections)) $this->_sectionsToFlush = array_merge($this->_sectionsToFlush, $associatedSections);
-			
+
 		}
 
 		public function eventFinalSaveFilter(array $context){
 			if(!in_array('cacheable-datasource', $context['event']->eParamFILTERS)) return;
-			
+
 			$this->flushCache($context);
 		}
 
@@ -145,7 +145,7 @@
 				'Flush DS Cache'
 			);
 		}
-	
+
 		/**
 		 * `DatasourcePreCreate` delegate callback function
 		 * Checks whether a data source should be cached or not: builds a filename based on
@@ -157,15 +157,15 @@
 		 *  Delegate context including the data source object, output XML and param pool array
 		 */
 		public function dataSourcePreExecute($context) {
-		
+
 			$ds = $context['datasource'];
 			$param_pool = $context['param_pool'];
-		
+
 			// don't cache if no cache TTL is set at all
 			if(!isset($ds->dsParamCACHE)) return;
 			// don't cache when the TTL is zero
 			if((int)$ds->dsParamCACHE == 0) return;
-			
+
 			$filename = NULL;
 			$file_age = 0;
 
@@ -199,7 +199,7 @@
 				$xml = preg_replace('/cache-age="fresh"/', 'cache-age="'.$file_age.'s"', $xml);
 
 			} else {
-			
+
 				// Backup the param pool, and see what's been added
 				$tmp = array();
 
@@ -225,9 +225,9 @@
 
 			$context['xml'] = $xml;
 			$context['param_pool'] = $param_pool;
-		
+
 		}
-	
+
 		/**
 		 * Serialises the data source object properties into a checksum hash to see
 		 * whether the data source is currently cached, and whether it has expired.
@@ -242,6 +242,13 @@
 		 */
 		private function __buildCacheFilename($datasource, &$filename, &$file_age) {
 			$filename = null;
+
+			// Checks if cacheabledatasource directory exists. If not, try to restore.
+			if (!file_exists(CACHE . '/cacheabledatasource')) {
+				if (!General::realiseDirectory(CACHE . '/cacheabledatasource', Symphony::Configuration()->get('write_mode', 'directory'))) {
+					throw new Exception(__('Cacheable Datasource: Cache directory could not be restored at %s.', array('<code>/manifest/cache/cacheabledatasource</code>')));
+				}
+			}
 
 			// get resolved values of each public property of this DS
 			// (sort, filters, included elements etc.)
@@ -262,10 +269,10 @@
 			if (!file_exists($filename)) return false;
 
 			$file_age = (int)(floor(time() - filemtime($filename)));
-		
+
 			return ($file_age < ($datasource->dsParamCACHE));
 		}
-	
+
 		/**
 		 * Executes a data source. Invalid XML is escaped (CDATA) but still
 		 * cached. Prevents persistent cached XML from breaking pages.
@@ -320,7 +327,7 @@
 
 			return $ret;
 		}
-	
+
 		/**
 		 * `DatasourcePreCreate` and `DatasourcePreEdit` delegates callback function
 		 * Adds the dsParamCACHE property to the data source class file.
@@ -329,21 +336,21 @@
 		 *  Delegate context including string contents of the data souce PHP file
 		 */
 		public function dataSourceSave($context) {
-		
+
 			$contents = $context['contents'];
 			$cache = $_POST['fields']['cache'];
-		
+
 			if(!isset($cache)) return;
-		
+
 			$contents = preg_replace(
 				"/<!-- VAR LIST -->/",
 				"public \$dsParamCACHE = '$cache';\n\t\t<!-- VAR LIST -->",
 				$contents
 			);
-		
+
 			$context['contents'] = $contents;
 		}
-	
+
 		/**
 		 * `InitaliseAdminPageHead` delegate callback function
 		 * Appends script assets and context to page head
@@ -352,15 +359,15 @@
 		 *  Delegate context including page object
 		 */
 		public function initaliseAdminPageHead($context) {
-		
+
 			$page = Administration::instance()->Page;
 			if(!$page instanceOf contentBlueprintsDatasources) return;
-		
+
 			$url_context = $page->getContext();
 			if(!in_array($url_context[0], array('new', 'edit'))) return;
-		
+
 			$cache = 0;
-		
+
 			// if editing an existing data source, instantiate the DS object
 			// to retrieve the dsParamCACHE property if it exists
 			if($url_context[0] == 'edit') {
@@ -370,7 +377,7 @@
 				$cache = $datasource->dsParamCACHE;
 			}
 			if(is_null($cache)) $cache = 0;
-		
+
 			Administration::instance()->Page->addElementToHead(
 				new XMLElement(
 					'script',
@@ -380,15 +387,15 @@
 					array('type' => 'text/javascript')
 				), time()
 			);
-		
+
 			Administration::instance()->Page->addScriptToHead(
 				URL . '/extensions/cacheabledatasource/assets/cacheabledatasource.blueprintsdatasources.js',
 				time()
 			);
-			
-		
+
+
 		}
-	
+
 	}
 
 ?>
