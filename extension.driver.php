@@ -187,7 +187,7 @@
 
 					// remove line 1 and join XML into a string again
 					unset($xml_lines[0]);
-					$xml = join('', $xml_lines);
+					$xml = implode("\n", $xml_lines);
 
 					// add cached output params back into the pool
 					foreach ($output_params as $key => $value) {
