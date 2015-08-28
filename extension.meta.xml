@@ -16,6 +16,9 @@
 		</author>
 	</authors>
 	<releases>
+		<release version="2.1.1" date="2015-08-28" min="2.4">
+			- Improved and updated documentation in readme file
+		</release>
 		<release version="2.1.0" date="2014-06-16" min="2.4">
 			- Added cache folder creation, if missing
 		</release>
