@@ -16,6 +16,11 @@
 		</author>
 	</authors>
 	<releases>
+		<release version="2.2.0" date="2015-09-11" min="2.6">
+			- Fix parameter pool handling (#14)
+			- Fix datasource filter storage (#17)
+			- Clean-up
+		</release>
 		<release version="2.1.1" date="2015-08-28" min="2.4">
 			- Improved and updated documentation in readme file
 		</release>
