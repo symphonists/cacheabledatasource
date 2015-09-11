@@ -81,11 +81,8 @@
 
 			$cacheDir = CACHE . '/cacheabledatasource/';
 
-			require_once(TOOLKIT . '/class.datasourcemanager.php');
-			$dsm = new DatasourceManager(Symphony::Engine());
-
 			try {
-				foreach($dsm->listAll() as $ds) {
+				foreach(DatasourceManager::listAll() as $ds) {
 					if(!in_array($ds['source'], $this->_sectionsToFlush)) continue;
 
 					$cache = glob($cacheDir.$ds['handle'].'_*.xml');
