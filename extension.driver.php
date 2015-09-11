@@ -197,20 +197,20 @@
 
 			} else {
 
-				// Backup the param pool, and see what's been added
-				$tmp = array();
+				// Backup the param pool
+				$old_param_pool = $param_pool;
 
 				// Fetch the contents
-				$xml = $this->__executeDatasource($ds, $tmp);
+				$xml = $this->__executeDatasource($ds, $param_pool);
 
+				// See what has been added to the param pool
+				$new_params = array_diff_key($param_pool, $old_param_pool);
+
+				// Create output params string (null or one line)
 				$output_params = null;
-
-				// Push into the params array
-				foreach ($tmp as $name => $value) {
-					$param_pool[$name] = $value;
+				if (!empty($new_params)) {
+				    $output_params = sprintf("%s\n", serialize($new_params));
 				}
-
-				if (count($tmp) > 0) $output_params = sprintf("%s\n", serialize($tmp));
 
 				// Add an attribute to preg_replace later
 				$xml->setAttribute("cache-age", "fresh");
