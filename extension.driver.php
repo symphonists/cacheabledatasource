@@ -252,7 +252,7 @@
 			foreach (get_class_vars(get_class($datasource)) as $key => $value) {
 				if (substr($key, 0, 2) == 'ds') {
 					$value = $datasource->{$key};
-					$filename .= $key . (is_array($value) ? implode($value) : $value);
+					$filename .= $key . (is_array($value) ? http_build_query($value) : $value);
 				}
 			}
 
