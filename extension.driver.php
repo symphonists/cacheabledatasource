@@ -181,6 +181,10 @@
             if ((int)$ds->dsParamCACHE == 0) {
                 return;
             }
+            // don't double cache any Dynamic XML or Remote datasources
+            if (isset($ds->dsParamURL)) {
+                return;
+            }
 
             $filename = null;
             $file_age = 0;
