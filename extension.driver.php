@@ -2,21 +2,30 @@
 
     class Extension_CacheableDatasource extends Extension
     {
-        private $_sectionsToFlush = null;
+        private $_sectionsToFlush = array();
 
         public function install()
         {
-            if (!General::realiseDirectory(CACHE . '/cacheabledatasource', Symphony::Configuration()->get('write_mode', 'directory'))) {
-                throw new Exception(__('Cacheable Datasource was not installed: cache directory could not be created at %s.', array('<code>/manifest/cache/cacheabledatasource</code>')));
+            if (!General::realiseDirectory(
+                CACHE . '/cacheabledatasource',
+                Symphony::Configuration()->get('write_mode', 'directory')
+            )) {
+                throw new Exception(__(
+                    'Cacheable Datasource was not installed: cache directory could not be created at %s.',
+                    array('<code>/manifest/cache/cacheabledatasource</code>')
+                ));
             }
+
             return true;
         }
 
         public function uninstall()
         {
             if (is_dir(CACHE . '/cacheabledatasource')) {
-                rmdir(CACHE . '/cacheabledatasource');
+                return rmdir(CACHE . '/cacheabledatasource');
             }
+
+            return true;
         }
 
         public function getSubscribedDelegates()
@@ -38,9 +47,9 @@
                     'callback'    => 'dataSourceSave'
                 ),
                 array(
-                    'page' => '/backend/',
-                    'delegate' => 'InitaliseAdminPageHead',
-                    'callback' => 'initaliseAdminPageHead'
+                    'page'        => '/backend/',
+                    'delegate'    => 'InitaliseAdminPageHead',
+                    'callback'    => 'initaliseAdminPageHead'
                     ),
                 array(
                     'page'      => '/publish/new/',
@@ -68,14 +77,14 @@
                     'callback'  => 'eventFinalSaveFilter'
                 ),
                 array(
-                    'page' => '/blueprints/events/new/',
-                    'delegate' => 'AppendEventFilter',
-                    'callback' => 'appendEventFilter'
+                    'page'      => '/blueprints/events/new/',
+                    'delegate'  => 'AppendEventFilter',
+                    'callback'  => 'appendEventFilter'
                 ),
                 array(
-                    'page' => '/blueprints/events/edit/',
-                    'delegate' => 'AppendEventFilter',
-                    'callback' => 'appendEventFilter'
+                    'page'      => '/blueprints/events/edit/',
+                    'delegate'  => 'AppendEventFilter',
+                    'callback'  => 'appendEventFilter'
                 ),
             );
         }
@@ -83,7 +92,6 @@
         public function flushCache($context)
         {
             $this->__fetchSectionsFromContext($context);
-
             $cacheDir = CACHE . '/cacheabledatasource/';
 
             try {
@@ -93,6 +101,7 @@
                     }
 
                     $cache = glob($cacheDir.$ds['handle'].'_*.xml');
+
                     if (empty($cache)) {
                         continue;
                     }
@@ -108,34 +117,35 @@
 
         private function __fetchSectionsFromContext($context)
         {
-            if (!is_null($this->_sectionsToFlush)) {
-                return;
-            }
+            // Determine what the affected section is from the entry_id
+            if (in_array($context['delegate'], array('EntryPreDelete', 'EntriesPostOrder'))) {
+                $affectedSection = EntryManager::fetchEntrySectionID($context['entry_id'][0]);
 
-            $this->_sectionsToFlush = array();
+            // Or from the entry object
+            } elseif ($context['delegate'] === 'EventFinalSaveFilter') {
+                $affectedSection = EntryManager::fetchEntrySectionID($context['entry']->get('id'));
 
-            if ($context['delegate'] == 'EntryPreDelete' || $context['delegate'] == 'EntriesPostOrder') {
-                require_once(TOOLKIT . '/class.entrymanager.php');
-                $this->_sectionsToFlush[0] = EntryManager::fetchEntrySectionID($context['entry_id'][0]);
-            } elseif ($context['delegate'] == 'EventFinalSaveFilter') {
-                require_once(TOOLKIT . '/class.entrymanager.php');
-                $this->_sectionsToFlush[0] = EntryManager::fetchEntrySectionID($context['entry']->get('id'));
+            // Or finally, default from the section id
             } else {
-                $this->_sectionsToFlush[0] = $context['section']->get('id');
+                $affectedSection = $context['section']->get('id');
             }
 
-            $associatedSections = Symphony::Database()->fetch(
-                sprintf('SELECT DISTINCT `child_section_id` value, `parent_section_id` value FROM `tbl_sections_association`
-					WHERE `parent_section_id` = %d OR `child_section_id` = %d',
-                    $this->_sectionsToFlush[0],
-                    $this->_sectionsToFlush[0]
-                )
-            );
+            // Find any associated sections for the affected section
+            $associatedSections = Symphony::Database()->fetch(sprintf('
+                SELECT DISTINCT `child_section_id`, `parent_section_id`
+                FROM `tbl_sections_association`
+				WHERE `parent_section_id` = %1$d OR `child_section_id` = %1$d',
+                $affectedSection
+            ));
 
             General::flattenArray($associatedSections);
-            $associatedSections = array_unique(array_values($associatedSections));
+            $associatedSections = array_values($associatedSections);
+            $sectionsToFlush = array_unique(array_merge(
+                array($affectedSection),
+                $associatedSections
+            ));
 
-            if (is_array($associatedSections) && !empty($associatedSections)) {
+            if (!empty($sectionsToFlush)) {
                 $this->_sectionsToFlush = array_merge($this->_sectionsToFlush, $associatedSections);
             }
         }
@@ -202,7 +212,6 @@
                 // output params are a serialised array on line 1
                 $output_params = @unserialize(trim($xml_lines[0]));
 
-
                 // there are cached output parameters
                 if (is_array($output_params)) {
 
@@ -217,7 +226,8 @@
                 }
 
                 // set cache age in the XML result
-                $xml = preg_replace('/cache-age="fresh"/', 'cache-age="'.$file_age.'s"', $xml);
+                $xml = preg_replace('/(cache-age=[\'\"])fresh([\'\"])/', '${1}'.$file_age.'s$2', $xml);
+
             } else {
 
                 // Backup the param pool
@@ -305,7 +315,7 @@
          */
         private function __executeDatasource($datasource, &$param_pool=array())
         {
-            $result = $datasource->grab($param_pool);
+            $result = $datasource->execute($param_pool);
             $xml = is_object($result) ? $result->generate(true, 1) : $result;
 
             // Parse DS XML to check for errors. If contains malformed XML such as
