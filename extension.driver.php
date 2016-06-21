@@ -134,7 +134,7 @@
             $associatedSections = Symphony::Database()->fetch(sprintf('
                 SELECT DISTINCT `child_section_id`, `parent_section_id`
                 FROM `tbl_sections_association`
-				WHERE `parent_section_id` = %1$d OR `child_section_id` = %1$d',
+                WHERE `parent_section_id` = %1$d OR `child_section_id` = %1$d',
                 $affectedSection
             ));
 
@@ -146,7 +146,7 @@
             ));
 
             if (!empty($sectionsToFlush)) {
-                $this->_sectionsToFlush = array_merge($this->_sectionsToFlush, $associatedSections);
+                $this->_sectionsToFlush = array_merge($this->_sectionsToFlush, $sectionsToFlush);
             }
         }
 
