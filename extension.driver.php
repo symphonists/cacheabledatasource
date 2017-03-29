@@ -288,6 +288,11 @@
                 }
             }
 
+            // Check for multilingual settings
+            if (class_exists('FLang') && is_callable(array('FLang', 'getLangCode'))) {
+                $filename .= FLang::getLangCode();
+            }
+
             $filename = sprintf(
                 "%s/cache/cacheabledatasource/%s_%s.xml",
                 MANIFEST,
