@@ -192,7 +192,7 @@
                 return;
             }
             // don't double cache any Dynamic XML or Remote datasources
-            if (isset($ds->dsParamURL)) {
+            if (is_subclass_of($this, 'DynamicXMLDatasource') || is_subclass_of($this, 'RemoteDatasource')) {
                 return;
             }
 
