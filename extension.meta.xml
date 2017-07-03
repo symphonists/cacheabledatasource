@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<extension id="cacheabledatasource" status="released" xmlns="http://symphony-cms.com/schemas/extension/1.0">
+<extension id="cacheabledatasource" status="released" xmlns="http://getsymphony.com/schemas/extension/1.0">
 	<name>Cacheable Datasource</name>
 	<description lang="en">Improve page performance by caching data source output XML.</description>
 	<repo type="github">https://github.com/symphonists/cacheabledatasource</repo>
@@ -11,6 +11,7 @@
 	<authors>
 		<author>
 			<name github="symphonists" symphony="community">Symphony Community</name>
+			<website>https://www.getsymphony.com</website>
 		</author>
 		<author>
 			<name github="nickdunn" symphony="nickdunn" twitter="nickdunn">Nick Dunn</name>
@@ -18,6 +19,10 @@
 		</author>
 	</authors>
 	<releases>
+		<release version="2.3.1" date="2017-03-30" min="2.6.0" max="2.x.x">
+			- Fix wrong label which is in seconds, not minutes (#22)
+			- Fix potential remote code execution vector
+		</release>
 		<release version="2.3.0" date="2017-03-30" min="2.6.0" max="2.x.x">
 			- Fix issue with associated sections (#12)
 			- Prevent double caching when the data source is a remote or dynamic data source
