@@ -391,7 +391,7 @@
 
             $contents = preg_replace(
                 "/<!-- VAR LIST -->/",
-                "public \$dsParamCACHE = '$cache';\n\t\t<!-- VAR LIST -->",
+                "public \$dsParamCACHE = '$cache';\n<!-- VAR LIST -->",
                 $contents
             );
 
