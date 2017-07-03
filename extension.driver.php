@@ -384,6 +384,11 @@
                 return;
             }
 
+            $cache = General::intval($cache);
+            if ($cache < 0) {
+                $cache = 0;
+            }
+
             $contents = preg_replace(
                 "/<!-- VAR LIST -->/",
                 "public \$dsParamCACHE = '$cache';\n\t\t<!-- VAR LIST -->",
