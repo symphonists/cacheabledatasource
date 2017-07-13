@@ -168,6 +168,18 @@
             );
         }
 
+        protected function dataSourceClassCanBeCached($ds)
+        {
+            // don't double cache any Dynamic XML or Remote datasources
+            return !is_subclass_of($ds, 'DynamicXMLDatasource') && !is_subclass_of($ds, 'RemoteDatasource');
+        }
+
+        protected function dataSourceContentCanBeCached($ds)
+        {
+            // don't double cache any Dynamic XML or Remote datasources
+            return strpos($ds, 'DynamicXMLDatasource') === false && strpos($ds, 'RemoteDatasource') === false;
+        }
+
         /**
          * `DatasourcePreCreate` delegate callback function
          * Checks whether a data source should be cached or not: builds a filename based on
@@ -180,6 +192,10 @@
          */
         public function dataSourcePreExecute($context)
         {
+            if (!isset($context['datasource'])) {
+                return;
+            }
+
             $ds = $context['datasource'];
             $param_pool = $context['param_pool'];
 
@@ -187,12 +203,14 @@
             if (!isset($ds->dsParamCACHE)) {
                 return;
             }
+
             // don't cache when the TTL is zero
-            if ((int)$ds->dsParamCACHE == 0) {
+            if ((int)$ds->dsParamCACHE === 0) {
                 return;
             }
-            // don't double cache any Dynamic XML or Remote datasources
-            if (is_subclass_of($this, 'DynamicXMLDatasource') || is_subclass_of($this, 'RemoteDatasource')) {
+
+            // don't cache if not needed
+            if (!$this->dataSourceClassCanBeCached($ds)) {
                 return;
             }
 
@@ -377,10 +395,19 @@
          */
         public function dataSourceSave($context)
         {
+            if (!isset($context['contents'])) {
+                return;
+            }
+
             $contents = $context['contents'];
             $cache = $_POST['fields']['cache'];
 
             if (!isset($cache)) {
+                return;
+            }
+
+            // don't edit if not needed
+            if (!$this->dataSourceContentCanBeCached($contents)) {
                 return;
             }
 
