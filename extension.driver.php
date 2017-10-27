@@ -265,6 +265,9 @@
 
                 // Add an attribute to preg_replace later
                 $xml->setAttribute("cache-age", "fresh");
+                
+                // Add an attribute cache-expiration
+                $xml->setAttribute("cache-expiration", $ds->dsParamCACHE);
 
                 // Write the cached XML to disk
                 file_put_contents($filename, $output_params . $xml->generate(true, 1));
