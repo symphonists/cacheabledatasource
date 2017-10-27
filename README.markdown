@@ -22,13 +22,13 @@ View the `?debug` XML of your frontend page and you should see the cached XML an
 The first time you execute the datasource you will see the data marked as fresh. This has come directly from the database as usual:
 
 ```xml
-<my-data-source cache-age="fresh">
+<my-data-source cache-age="fresh" cache-expiration="1000">
 ```
 
 Subsequent refreshes will show you the age of the cached data in seconds:
 
 ```xml
-<my-data-source cache-age="30s">
+<my-data-source cache-age="30s" cache-expiration="1000">
 ```
 
 ## Frequently Asked Questions

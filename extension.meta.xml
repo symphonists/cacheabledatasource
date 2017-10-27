@@ -19,6 +19,9 @@
 		</author>
 	</authors>
 	<releases>
+		<release version="2.4.0" date="2017-10-27" min="2.6.0" max="2.x.x">
+			- Add cache-expiration attribute in Data Source (#24)
+		</release>
 		<release version="2.3.2" date="2017-07-13" min="2.6.0" max="2.x.x">
 			- Fix regression with ignored data sources (#22)
 		</release>
