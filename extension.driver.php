@@ -293,6 +293,11 @@
         {
             $filename = null;
 
+            // Check if cache is infinite
+            if ($datasource->dsParamCACHE === -1) {
+                return true;
+            }
+
             // Checks if cacheabledatasource directory exists. If not, try to restore.
             if (!file_exists(CACHE . '/cacheabledatasource')) {
                 if (!General::realiseDirectory(CACHE . '/cacheabledatasource', Symphony::Configuration()->get('write_mode', 'directory'))) {
@@ -403,11 +408,12 @@
             }
 
             $contents = $context['contents'];
-            $cache = $_POST['fields']['cache'];
 
-            if (!isset($cache)) {
+            if (empty($_POST['fields']['cache'])) {
                 return;
             }
+
+            $cache = $_POST['fields']['cache'];
 
             // don't edit if not needed
             if (!$this->dataSourceContentCanBeCached($contents)) {
@@ -415,13 +421,17 @@
             }
 
             $cache = General::intval($cache);
-            if ($cache < 0) {
+            // Check if the user submitted -1 literally
+            if ($cache === -1 && (int)$_POST['fields']['cache'] === -1) {
+                $cache = -1;
+            // Failed to parse to a int, disable cache
+            } elseif ($cache < 0) {
                 $cache = 0;
             }
 
             $contents = preg_replace(
                 "/<!-- VAR LIST -->/",
-                "public \$dsParamCACHE = '$cache';\n<!-- VAR LIST -->",
+                "public \$dsParamCACHE = $cache;\n<!-- VAR LIST -->",
                 $contents
             );
 

@@ -5,7 +5,8 @@
 		'Caching': false,
 		'The cache will automatically be purged when updating entries in the backend.': false,
 		'Cache expiration ': false,
-		'in seconds': false
+		'in seconds': false,
+		'Use -1 to have infinite cache, 0 to disable it.': false
 	});
 
 	$(document).on('ready.cacheabledatasource', function() {
@@ -30,7 +31,10 @@
 
 		// Create label
 		label = $('<label />', {
-			html: Symphony.Language.get('Cache expiration') + '<i>' + Symphony.Language.get('in seconds') + '</i>'
+			html: Symphony.Language.get('Cache expiration') +
+				'<i>' + Symphony.Language.get('in seconds') + '. ' +
+				Symphony.Language.get('Use -1 to have infinite cache, 0 to disable it.') +
+				'</i>'
 		}).appendTo(fieldset);
 
 		// Crate input
