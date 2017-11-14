@@ -13,7 +13,7 @@ This extension enables datasources that fetch entries from sections to be cached
 
 ## Usage
 
-Install this extension like any other. When you create or edit a datasource that fetches entries from a section, you will see an additional "Cache" option at the bottom of the editor. Change the number of seconds to suit your requirement. A value of `0` means no caching.
+Install this extension like any other. When you create or edit a datasource that fetches entries from a section, you will see an additional "Cache" option at the bottom of the editor. Change the number of seconds to suit your requirement. A value of `0` means no caching. A value of `-1` means infinite cache.
 
 ### Refresh your frontend page
 
