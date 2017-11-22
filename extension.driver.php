@@ -293,10 +293,7 @@
         {
             $filename = null;
 
-            // Check if cache is infinite
-            if ($datasource->dsParamCACHE === -1) {
-                return true;
-            }
+           
 
             // Checks if cacheabledatasource directory exists. If not, try to restore.
             if (!file_exists(CACHE . '/cacheabledatasource')) {
@@ -328,6 +325,11 @@
 
             if (!file_exists($filename)) {
                 return false;
+            }
+            
+             // Check if cache is infinite
+            if ($datasource->dsParamCACHE === -1) {
+                return true;
             }
 
             $file_age = (int)(floor(time() - filemtime($filename)));
