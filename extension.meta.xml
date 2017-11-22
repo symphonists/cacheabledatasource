@@ -19,6 +19,9 @@
 		</author>
 	</authors>
 	<releases>
+		<release version="2.5.1" date="2017-11-22" min="2.6.0" max="2.x.x">
+			- Bug fix: Make sure the cache file gets created (#26)
+		</release>
 		<release version="2.5.0" date="2017-11-13" min="2.6.0" max="2.x.x">
 			- Add infinite cache duration (#25)
 		</release>
