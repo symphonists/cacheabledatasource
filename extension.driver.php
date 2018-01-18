@@ -317,8 +317,8 @@
             }
 
             $filename = sprintf(
-                "%s/cache/cacheabledatasource/%s_%s.xml",
-                MANIFEST,
+                "%s/cacheabledatasource/%s_%s.xml",
+                CACHE,
                 preg_replace("/^datasource/", '', get_class($datasource)),
                 md5($filename)
             );
